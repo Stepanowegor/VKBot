@@ -72,7 +72,7 @@ def validate_age(message):
 def validate_sex(message):
     if message == "мужской" or message == "м":
         return 2
-    elif message == "женский" or message == "д":
+    elif message == "женский" or message == "ж":
         return 1
     else:
         return False
