@@ -122,7 +122,7 @@ try:
                             profile_data = fetch_profiles(search_users(users[user_id]), user_id, offsets[user_id])
                             offsets[user_id] = profile_data[4]
                             bot.answer(f"💖 {profile_data[0]}, {profile_data[1]} лет\n"
-                                       f"Сссылка на страницу: https://vk.com/id{profile_data[2]}", attachment=profile_data[3],
+                                       f"Ссылка на страницу: https://vk.com/id{profile_data[2]}", attachment=profile_data[3],
                                        keyboard=key_search)
 
 except requests.ConnectionError or requests.ConnectTimeout:
