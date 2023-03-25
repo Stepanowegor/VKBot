@@ -14,6 +14,8 @@ users = {}
 profiles = {}
 offsets = {}
 
+print("Стартуем!")
+
 try:
     @bot.get_updates
     def main(event):

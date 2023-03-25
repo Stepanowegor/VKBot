@@ -1,5 +1,5 @@
 class VKLongBotExceptions (Exception):
-    # Ошибки использования API:
+    # Ошибки при использовании API:
     class API (Exception):
         class WrongArgumentsType (Exception):
             def __init__(self, error_text):
