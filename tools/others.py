@@ -108,7 +108,10 @@ def search_users(params):
                                     "v": 5.131
                                 }).json()['response']['items']
 
-        return response
+        profiles = [person for person in response if not person['is_closed']]
+
+
+        return profiles
 
     except KeyError:
         return False
