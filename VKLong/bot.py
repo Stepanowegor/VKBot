@@ -85,6 +85,5 @@ class Bot:
                           "reply_id": reply_id, "forward_messages": forward_messages, "sticker_id": sticker_id,
                           "payload": payload, "dont_parse_links": dont_parse_links, "disable_mentions": disable_mentions})
 
-    # Подробнее: https://dev.vk.com/api/bots/development/keyboard
     def send_message_event_answer(self, event_id: str, user_id: int, peer_id: int, event_data: dict):
         self.execute_api("messages.sendMessageEventAnswer", {'event_id': event_id, 'user_id': user_id, 'peer_id': peer_id, 'event_data': json.dumps(event_data)})
