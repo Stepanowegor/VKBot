@@ -16,6 +16,7 @@ profiles = {}
 offsets = {}
 
 print("Стартуем!")
+creating_database()
 
 try:
     @bot.get_updates
