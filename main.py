@@ -5,6 +5,7 @@ from config import *
 from VKLong import Bot
 from tools.others import *
 from tools.keyboards import *
+import databases.db
 
 bot = Bot(token=BOT_TOKEN)
 
@@ -15,6 +16,7 @@ profiles = {}
 offsets = {}
 
 print("Стартуем!")
+creating_database()
 
 try:
     @bot.get_updates
