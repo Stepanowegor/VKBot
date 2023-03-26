@@ -41,6 +41,13 @@ def insert_showed_users(vk_id):
             VALUES ('{vk_id}');"""
         )
 
+def drop_users():
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """DROP TABLE IF EXISTS users CASCADE;"""
+        )
+
 def creating_database():
+    drop_users()
     create_table_users()
     create_table_showed_users()
