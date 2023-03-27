@@ -16,7 +16,6 @@ profiles = {}
 offsets = {}
 
 print("Стартуем!")
-creating_database()
 
 try:
     @bot.get_updates
@@ -125,7 +124,6 @@ try:
                         else:
                             profile_data = fetch_profiles(search_users(users[user_id]), user_id, offsets[user_id])
                             offsets[user_id] = profile_data[4]
-                            databases.db.insert_showed_users(vk_id=profile_data[2])
                             bot.answer(f"💖 {profile_data[0]}, {profile_data[1]} лет\n"
                                        f"Ссылка на страницу: https://vk.com/id{profile_data[2]}", attachment=profile_data[3],
                                        keyboard=key_search)
