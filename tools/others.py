@@ -96,7 +96,7 @@ def search_users(params):
         response = requests.get("https://api.vk.com/method/users.search",
                                 params={
                                     "sort": 0,
-                                    "count": 1000,
+                                    "count": 100,
                                     "city_id": params[0],
                                     "fields": "bdate, city",
                                     "sex": sex_choice,
@@ -122,9 +122,7 @@ def get_popular_photos(user_id):
                                 params={
                                     "owner_id": user_id,
                                     "extended": 1,
-                                    "count": 100,
-                                    "no_service_albums": 1,
-                                    "skip_hidden": 1,
+                                    "count": 50,
                                     "access_token": USER_TOKEN,
                                     "v": 5.131
                                 }).json()['response']
