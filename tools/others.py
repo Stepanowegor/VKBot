@@ -152,21 +152,28 @@ def get_popular_photos(user_id):
         return False
 
 def fetch_profiles(response, user_id, offset):
+    showed_ids = profiles.execute("SELECT showed_profile_id FROM main WHERE user_id = ?", (user_id,)).fetchall()
     while True:
         total_lists = len(response)
         profile_object = response[offset]
         profile_id = profile_object['id']
-        photos = get_popular_photos(profile_id)
-        if photos:
-            profile_age = int(datetime.datetime.now().year) - int(profile_object['bdate'].split(".")[-1])
-            profile_first_name = profile_object['first_name']
+        if (profile_id,) in showed_ids:
             offset += 1
-            return [
-                profile_first_name,
-                profile_age,
-                profile_id,
-                photos,
-                offset
-            ]
         else:
-            offset += 1
+            photos = get_popular_photos(profile_id)
+            if photos:
+                profile_age = int(datetime.datetime.now().year) - int(profile_object['bdate'].split(".")[-1])
+                profile_first_name = profile_object['first_name']
+                offset += 1
+                profiles.execute("INSERT INTO main(user_id, showed_profile_id) VALUES (?, ?)",
+                                 (user_id, profile_id))
+                profiles_db.commit()
+                return [
+                    profile_first_name,
+                    profile_age,
+                    profile_id,
+                    photos,
+                    offset
+                ]
+            else:
+                offset += 1
