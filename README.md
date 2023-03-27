@@ -1,3 +1,2 @@
 # VKBot_VKinder
- 
-Private!
+
