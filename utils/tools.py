@@ -117,6 +117,7 @@ def search_profiles(user_id, users):
                                         "status": 6,
                                         "age_from": age - 5,
                                         "age_to": age + 5,
+                                        "has_photo": 1,
                                         "access_token": USER_TOKEN,
                                         "v": 5.131
                                     }).json()['response']['items']
