@@ -98,7 +98,7 @@ def get_popular_photos(user_id):
 
 def search_profiles(user_id, users):
     while True:
-        if users[user_id]['searched_profiles'] == {}:
+        if len(users[user_id]['searched_profiles']) == 0:
             age = int(users[user_id]['data']['age'])
             offset = int(users[user_id]['offset'])
             preferred_sex = None
@@ -106,42 +106,41 @@ def search_profiles(user_id, users):
                 preferred_sex = 2
             elif users[user_id]['data']['sex'] == 2:
                 preferred_sex = 1
-            response = requests.get("https://api.vk.com/method/users.search",
-                                    params={
-                                        "sort": 0,
-                                        "offset": offset,
-                                        "count": 50,
-                                        "fields": "bdate",
-                                        "city_id": users[user_id]['data']['city_id'],
-                                        "sex": preferred_sex,
-                                        "status": 6,
-                                        "age_from": age - 5,
-                                        "age_to": age + 5,
-                                        "has_photo": 1,
-                                        "access_token": USER_TOKEN,
-                                        "v": 5.131
-                                    }).json()['response']['items']
+            params = {"sort": 0,
+                      "offset": offset,
+                      "count": 20,
+                      "fields": "bdate",
+                      "city_id": users[user_id]['data']['city_id'],
+                      "sex": preferred_sex,
+                      "status": 6,
+                      "age_from": age - 5,
+                      "age_to": age + 5,
+                      "has_photo": 1,
+                      "access_token": USER_TOKEN,
+                      "v": 5.131}
 
-            not_closed_profiles = [person for person in response if not person['is_closed']]
-            users[user_id]['offset'] = offset + 50
-            users[user_id]['searched_profiles'] = not_closed_profiles
+            response = requests.get(f'https://api.vk.com/method/users.search', params=params).json()
 
-        if users[user_id]['searched_profiles'] != {}:
+            if response.get('response') and len(response.get('response').get('items')) > 0:
+                not_closed_profiles = [person for person in response['response']['items'] if not person['is_closed']]
+                users[user_id]['searched_profiles'] = not_closed_profiles
+                users[user_id]['offset'] = offset + 20
+
+        if len(users[user_id]['searched_profiles']) > 0:
             viewed_users = profiles.execute("SELECT showed_profile_id FROM main WHERE user_id = ?", (user_id,)).fetchall()
-            while True:
-                s_profiles = users[user_id]['searched_profiles'][0]
-                searched_id = s_profiles['id']
-                if (searched_id,) not in viewed_users:
-                    has_photos = get_popular_photos(searched_id)
-                    if has_photos:
-                        s_age = current_year - int(s_profiles['bdate'].split(".")[-1])
-                        profiles.execute("INSERT INTO main(user_id, showed_profile_id) VALUES (?, ?)", (user_id, searched_id))
-                        profiles_db.commit()
-                        return {"page_link": f"vk.com/id{searched_id}",
-                                "name": s_profiles['first_name'],
-                                "age": s_age,
-                                "photos": has_photos}
-                users[user_id]['searched_profiles'].pop(0)
+            s_profiles = users[user_id]['searched_profiles'][0]
+            searched_id = s_profiles['id']
+            if (searched_id,) not in viewed_users:
+                has_photos = get_popular_photos(searched_id)
+                if has_photos:
+                    s_age = current_year - int(s_profiles['bdate'].split(".")[-1])
+                    profiles.execute("INSERT INTO main(user_id, showed_profile_id) VALUES (?, ?)", (user_id, searched_id))
+                    profiles_db.commit()
+                    return {"page_link": f"vk.com/id{searched_id}",
+                            "name": s_profiles['first_name'],
+                            "age": s_age,
+                            "photos": has_photos}
+            users[user_id]['searched_profiles'].pop(0)
 
 
 
