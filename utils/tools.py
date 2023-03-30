@@ -108,7 +108,7 @@ def search_profiles(user_id, users):
                 preferred_sex = 1
             params = {"sort": 0,
                       "offset": offset,
-                      "count": 20,
+                      "count": 30,
                       "fields": "bdate",
                       "city_id": users[user_id]['data']['city_id'],
                       "sex": preferred_sex,
@@ -124,7 +124,7 @@ def search_profiles(user_id, users):
             if response.get('response') and len(response.get('response').get('items')) > 0:
                 not_closed_profiles = [person for person in response['response']['items'] if not person['is_closed']]
                 users[user_id]['searched_profiles'] = not_closed_profiles
-                users[user_id]['offset'] = offset + 20
+                users[user_id]['offset'] = offset + 30
 
         if len(users[user_id]['searched_profiles']) > 0:
             viewed_users = profiles.execute("SELECT showed_profile_id FROM main WHERE user_id = ?", (user_id,)).fetchall()
