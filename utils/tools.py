@@ -121,26 +121,33 @@ def search_profiles(user_id, users):
 
             response = requests.get(f'https://api.vk.com/method/users.search', params=params).json()
 
-            if response.get('response') and len(response.get('response').get('items')) > 0:
-                not_closed_profiles = [person for person in response['response']['items'] if not person['is_closed']]
-                users[user_id]['searched_profiles'] = not_closed_profiles
-                users[user_id]['offset'] = offset + 30
+            try:
+                if response.get('response') and len(response.get('response').get('items')) > 0:
+                    not_closed_profiles = [person for person in response['response']['items'] if
+                                           not person['is_closed']]
+                    users[user_id]['searched_profiles'] = not_closed_profiles
+                    users[user_id]['offset'] = offset + 30
+            except KeyError:
+                print("Error!")
 
         if len(users[user_id]['searched_profiles']) > 0:
-            viewed_users = profiles.execute("SELECT showed_profile_id FROM main WHERE user_id = ?", (user_id,)).fetchall()
-            s_profiles = users[user_id]['searched_profiles'][0]
-            searched_id = s_profiles['id']
-            if (searched_id,) not in viewed_users:
-                has_photos = get_popular_photos(searched_id)
-                if has_photos:
-                    s_age = current_year - int(s_profiles['bdate'].split(".")[-1])
-                    profiles.execute("INSERT INTO main(user_id, showed_profile_id) VALUES (?, ?)", (user_id, searched_id))
-                    profiles_db.commit()
-                    return {"page_link": f"vk.com/id{searched_id}",
-                            "name": s_profiles['first_name'],
-                            "age": s_age,
-                            "photos": has_photos}
-            users[user_id]['searched_profiles'].pop(0)
+            try:
+                viewed_users = profiles.execute("SELECT showed_profile_id FROM main WHERE user_id = ?", (user_id,)).fetchall()
+                s_profiles = users[user_id]['searched_profiles'][0]
+                searched_id = s_profiles['id']
+                if (searched_id,) not in viewed_users:
+                    has_photos = get_popular_photos(searched_id)
+                    if has_photos:
+                        s_age = current_year - int(s_profiles['bdate'].split(".")[-1])
+                        profiles.execute("INSERT INTO main(user_id, showed_profile_id) VALUES (?, ?)", (user_id, searched_id))
+                        profiles_db.commit()
+                        return {"page_link": f"vk.com/id{searched_id}",
+                                "name": s_profiles['first_name'],
+                                "age": s_age,
+                                "photos": has_photos}
+                users[user_id]['searched_profiles'].pop(0)
+            except Exception as error:
+                print("An error occurred while accessing the database or other:", error)
 
 
 
