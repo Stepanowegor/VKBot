@@ -44,7 +44,7 @@ def validate_age(age):
             return True
         else:
             return False
-    except KeyError:
+    except ValueError:
         return False
 
 def get_city_id(name):
@@ -81,7 +81,7 @@ def get_popular_photos(user_id):
                 try:
                     likes_count = response['items'][i]['likes']['count']
                     likes[likes_count] = f"photo{user_id}_{response['items'][i]['id']}"
-                except ValueError:
+                except KeyError:
                     pass
             for x in range(3):
                 try:
