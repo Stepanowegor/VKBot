@@ -94,11 +94,14 @@ def main(event):
                                    "✍️ Проверьте правильность введенного названия:", key_sex_choice)
 
             else:
-                if message == "🔎 поиск!":
-                    bot.answer("🔎 Выполняется поиск...")
-                    fetched_data = search_profiles(user_id, users)
-                    bot.answer(f"💞 {fetched_data['name']}, {fetched_data['age']} | В активном поиске\n"
-                               f"Ссылка на страницу: {fetched_data['page_link']}",
-                               attachment=fetched_data['photos'])
-                else:
-                    bot.answer("😺 Воспользуйся кнопкой ниже, чтобы найти подходящие анкеты!", key_search)
+                try:
+                    if message == "🔎 поиск!":
+                        bot.answer("🔎 Выполняется поиск...")
+                        fetched_data = search_profiles(user_id, users)
+                        bot.answer(f"💞 {fetched_data['name']}, {fetched_data['age']} | В активном поиске\n"
+                                   f"Ссылка на страницу: {fetched_data['page_link']}",
+                                   attachment=fetched_data['photos'])
+                    else:
+                        bot.answer("😺 Воспользуйся кнопкой ниже, чтобы найти подходящие анкеты!", key_search)
+                except Exception as error:
+                    print("Произошла ошибка:", error)
